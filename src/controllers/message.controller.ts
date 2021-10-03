@@ -1,25 +1,25 @@
 import {
   Response,
   Request,
-  Params,
   Controller,
   Get,
-  attachControllers,
-  Middleware,
   Post,
 } from '@decorators/express'
-import { body, validationResult, ValidationChain } from 'express-validator'
+import { body } from 'express-validator'
 
 import MessageFakeRepository from '../components/message/infrastructure/persistence/message_fake_repository'
 import MessageSchema from '../models/message_schema'
+import { ValidateFields } from '../middlewares/validate_fields'
 
 
 const repo = new MessageFakeRepository()
 
 const new_message_validations: any[] = [
-  body('id').isUUID(4),
-  body('user_name').isString(),
-  body('content').isString(),
+  body('id', 'The id field is required and needs to be an UUID v4').isUUID(4),
+  body('user_name', 'The user_name field is required and needs to be a string at lieat 3 characters')
+    .isString().isLength({ min: 3 }),
+  body('content', 'The content field is required and needs to be a valid string').isString(),
+  ValidateFields,
 ]
 
 @Controller('/')
@@ -44,11 +44,6 @@ export class MessageController {
 
   @Post('/', new_message_validations)
   async newMessage(@Request() req, @Response() res) {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
-    }
-
     const rbody = req.body
     try {
       const message = new MessageSchema(rbody)
