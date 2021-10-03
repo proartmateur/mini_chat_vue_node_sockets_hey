@@ -27,7 +27,7 @@ const user_sequelize_repository_1 = __importDefault(require("../components/user/
 const repo = new user_sequelize_repository_1.default();
 let UsersDecoratorController = class UsersDecoratorController {
     constructor() {
-        this.base_route = '/learning_node';
+        this.base_route = '/api';
     }
     listAll(res) {
         return __awaiter(this, void 0, void 0, function* () {

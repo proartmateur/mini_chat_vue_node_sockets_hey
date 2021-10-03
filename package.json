@@ -43,12 +43,7 @@
     "express-session": "^1.17.2",
     "mariadb": "^2.5.4",
     "mongoose": "^6.0.8",
-    "sequelize": "^6.6.5"
-  },
-  "_moduleAliases": {
-    "@models": "dist/models",
-    "@routes": "dist/routes",
-    "@controllers": "dist/controllers",
-    "@components": "dist/components"
+    "sequelize": "^6.6.5",
+    "uuid": "^8.3.2"
   }
 }
