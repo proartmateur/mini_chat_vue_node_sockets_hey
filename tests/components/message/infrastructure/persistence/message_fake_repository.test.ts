@@ -13,3 +13,12 @@ it('Find: Should return a list of 1 items', async () => {
   console.log(messages)
   expect(messages.length).toBe(1)
 })
+
+it('Paginate', () => {
+  const total = 23
+  const page = 2
+  const limit = 10
+  const from_message = (Number(page) + 0) * Number(limit)
+  console.log(from_message)
+  expect(true).toBe(true)
+})

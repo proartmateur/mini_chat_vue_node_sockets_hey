@@ -10,6 +10,7 @@ import { body } from 'express-validator'
 import MessageFakeRepository from '../components/message/infrastructure/persistence/message_fake_repository'
 import MessageSchema from '../models/message_schema'
 import { ValidateFields } from '../middlewares/validate_fields'
+import { isNumber } from 'util'
 
 
 const repo = new MessageFakeRepository()
@@ -34,10 +35,25 @@ export class MessageController {
 
   // @ts-ignore
   @Get('/')
-  async listAll(@Response() res) {
-    const messages = await repo.list()
+  async listAll(@Request() req, @Response() res) {
+    const { page = 0, limit = 5 } = req.query
+    const from_message = Number(page)  * Number(limit)
+    console.log(limit)
+    console.log(from_message)
+    const messages = await MessageSchema.find()
+      .sort({timestamp: -1})
+      .skip(from_message)
+      .limit(Number(limit))
+
+    const total = await MessageSchema.count()
+
+    const total_pages = Math.ceil(total / limit)
     res.status(200).json({
-      users: messages,
+      messages,
+      page: Number(page),
+      limit: Number(limit),
+      total,
+      total_pages
     })
   }
 
