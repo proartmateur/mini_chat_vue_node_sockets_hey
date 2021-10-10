@@ -7,10 +7,12 @@ import {
 } from '@decorators/express'
 import { body } from 'express-validator'
 
+
 import MessageFakeRepository from '../components/message/infrastructure/persistence/message_fake_repository'
 import MessageSchema from '../models/message_schema'
 import { ValidateFields } from '../middlewares/validate_fields'
-import { isNumber } from 'util'
+
+import dayjs from 'dayjs'
 
 
 const repo = new MessageFakeRepository()
@@ -37,11 +39,11 @@ export class MessageController {
   @Get('/')
   async listAll(@Request() req, @Response() res) {
     const { page = 0, limit = 5 } = req.query
-    const from_message = Number(page)  * Number(limit)
+    const from_message = Number(page) * Number(limit)
     console.log(limit)
     console.log(from_message)
     const messages = await MessageSchema.find()
-      .sort({timestamp: -1})
+      .sort({ timestamp: -1 })
       .skip(from_message)
       .limit(Number(limit))
 
@@ -53,16 +55,27 @@ export class MessageController {
       page: Number(page),
       limit: Number(limit),
       total,
-      total_pages
+      total_pages,
     })
   }
 
 
   @Post('/', new_message_validations)
   async newMessage(@Request() req, @Response() res) {
-    const rbody = req.body
+    const {
+      id,
+      user_name,
+      content,
+    } = req.body
+
     try {
-      const message = new MessageSchema(rbody)
+      const message = new MessageSchema({
+        id,
+        content,
+        user_name,
+        time: dayjs().format('HH:mm'),
+        date: dayjs().format('YYYY-MM-DD'),
+      })
       await message.save()
       res.status(201).json({
         message: 'message created!',
@@ -80,7 +93,31 @@ export class MessageController {
     const content_query = req.body.content_query
     console.log(req)
     try {
-      const messages = await repo.find(content_query)
+      const messages = await MessageSchema.find({ content: { $regex: content_query, $options: 'i' } })
+        .sort({ timestamp: -1 })
+
+      if (!messages) {
+        res.status(404).json({
+          error: 'No se encontraron mensajes: ' + content_query,
+        })
+      }
+      res.status(200).json(messages)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        error: 'Problema con la búsqueda. :(',
+      })
+    }
+  }
+
+  @Post('/find_date')
+  async getMessageByDate(@Request() req, @Response() res) {
+    const content_query = req.body.content_query
+    console.log(req)
+    try {
+      const messages = await MessageSchema.find({ date: { $regex: content_query, $options: 'i' } })
+        .sort({ timestamp: -1 })
+
       if (!messages) {
         res.status(404).json({
           error: 'No se encontraron mensajes: ' + content_query,

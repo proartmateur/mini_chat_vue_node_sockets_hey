@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose'
-
 const MessageSchema = new Schema({
   id: {
     type: String,
@@ -13,6 +12,12 @@ const MessageSchema = new Schema({
   content: {
     type: String,
     required: [true, 'The content field is required'],
+  },
+  time: {
+    type: String
+  },
+  date: {
+    type: String
   },
   timestamp: {
     type: Date,
