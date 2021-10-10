@@ -8,10 +8,10 @@ export class Sockets {
 
   socketEvents() {
     this.io.on('connection', (socket) => {
-      socket.on('chat-message', (data) => {
-        console.log('chat-message:')
+      socket.on('chat_message', (data) => {
+        console.log('chat_message:')
         console.log(data)
-        this.io.emit('new-chat-message', data)
+        this.io.emit('new_chat_message', data)
       })
     })
   }

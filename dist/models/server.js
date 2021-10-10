@@ -30,7 +30,11 @@ class Server {
         this.dbConnection();
         this.app = (0, express_1.default)();
         this.server = new http_1.default.Server(this.app);
-        this.io = new socket_io_1.default.Server(this.server);
+        this.io = new socket_io_1.default.Server(this.server, {
+            cors: {
+                origin: 'http://localhost:3006',
+            },
+        });
         this.middlewares();
         this.routes();
         this.sockets();

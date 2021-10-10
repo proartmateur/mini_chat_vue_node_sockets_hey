@@ -30,7 +30,12 @@ class Server {
     this.dbConnection()
     this.app = express()
     this.server = new http.Server(this.app)
-    this.io = new socketio.Server(this.server)
+    this.io = new socketio.Server(this.server, {
+      cors: {
+        origin: 'http://localhost:3006',
+
+      },
+    })
 
     this.middlewares()
     this.routes()

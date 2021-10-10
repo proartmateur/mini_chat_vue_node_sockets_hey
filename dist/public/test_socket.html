@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+  <title>Access Denied!</title>
+
+
+</head>
+<body>
+<h1>Access Denied!</h1>
+
+<form id='chat-form' action=''>
+  <input type='text'>
+  <button>Enviar</button>
+</form>
+<div id='mensajes'></div>
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.7/dayjs.min.js'
+        integrity='sha512-bwD3VD/j6ypSSnyjuaURidZksoVx3L1RPvTkleC48SbHCZsemT3VKMD39KknPnH728LLXVMTisESIBOAb5/W0Q=='
+        crossorigin='anonymous' referrerpolicy='no-referrer'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js'
+        integrity='sha512-WL6WGKMPBiM9PnHRYIn5YEtq0Z8XP4fkVb4qy7PP4vhmYQErJ/dySyXuFIMDf1eEYCXCrQrMJfkNwKc9gsjTjA=='
+        crossorigin='anonymous' referrerpolicy='no-referrer'></script>
+<script>
+  //import dayjs from 'dayjs'
+
+  const socket = io('http://localhost:3009')
+  const user = 'Me'
+  const message_chat = {
+    '_id': '61628c601826fe04f77bd179',
+    'id': 'e6454d37-8ce3-4dd0-9250-74b3aaec7f9u',
+    'user_name': 'Bot Scket.io',
+    'content': 'Hola Mundo Socket IO',
+    'time': dayjs().format('HH:mm'),
+    'date': dayjs().format('YYYY-MM-DD'),
+    'timestamp': dayjs(),
+    '__v': 0,
+  }
+  socket.emit('chat_message', { data: message_chat })
+  socket.on('new_chat_message', (data) => {
+    console.log('new-chat-message:')
+
+    const uname = data.data.user
+    console.log('user: ', user, ' == uname:', uname)
+    if (uname === user) {
+      console.log('es un mensaje propio')
+    }
+  })
+</script>
+</body>
+</html>
