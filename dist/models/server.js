@@ -15,9 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
+const http_1 = __importDefault(require("http"));
+const socket_io_1 = __importDefault(require("socket.io"));
 const index_routes_1 = __importDefault(require("../routes/index.routes"));
 const message_routes_1 = __importDefault(require("../routes/api/message.routes"));
 const mongo_connection_1 = __importDefault(require("../db/mongo_connection"));
+const sockets_1 = require("./sockets");
 class Server {
     constructor() {
         this.port = process.env.PORT || '3000';
@@ -26,13 +29,19 @@ class Server {
         this.public_dir = path_1.default.resolve(__dirname, '../', 'public');
         this.dbConnection();
         this.app = (0, express_1.default)();
+        this.server = new http_1.default.Server(this.app);
+        this.io = new socket_io_1.default.Server(this.server);
         this.middlewares();
         this.routes();
+        this.sockets();
     }
     dbConnection() {
         return __awaiter(this, void 0, void 0, function* () {
             yield (0, mongo_connection_1.default)();
         });
+    }
+    sockets() {
+        const sockets = new sockets_1.Sockets(this.io);
     }
     middlewares() {
         this.app.use((0, cors_1.default)());
@@ -45,7 +54,10 @@ class Server {
         this.app.use(`${this.base_route}/api/messages`, message_routes_1.default);
     }
     listen() {
-        this.app.listen(this.port, () => {
+        // this.app.listen(this.port, () => {
+        //   console.log(`HTTP_OK: App listening at http://localhost:${this.port}`)
+        // })
+        this.server.listen(this.port, () => {
             console.log(`HTTP_OK: App listening at http://localhost:${this.port}`);
         });
     }

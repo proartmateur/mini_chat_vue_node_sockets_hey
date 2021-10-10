@@ -46,6 +46,7 @@
     "mariadb": "^2.5.4",
     "mongoose": "^6.0.8",
     "sequelize": "^6.6.5",
+    "socket.io": "^4.2.0",
     "uuid": "^8.3.2"
   }
 }
