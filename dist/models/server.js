@@ -32,7 +32,7 @@ class Server {
         this.server = new http_1.default.Server(this.app);
         this.io = new socket_io_1.default.Server(this.server, {
             cors: {
-                origin: 'http://localhost:3006',
+                origin: '*',
             },
         });
         this.middlewares();
