@@ -32,7 +32,7 @@ class Server {
     this.server = new http.Server(this.app)
     this.io = new socketio.Server(this.server, {
       cors: {
-        origin: 'http://localhost:3006',
+        origin: '*',
 
       },
     })
